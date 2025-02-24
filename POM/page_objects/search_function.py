@@ -1,8 +1,7 @@
-from selenium.webdriver import ActionChains
+import time
 from selenium.webdriver.support.expected_conditions import element_to_be_clickable, visibility_of_element_located, \
-    presence_of_all_elements_located, text_to_be_present_in_element
-from sockshandler import is_ip
-
+    presence_of_all_elements_located
+from selenium.webdriver.support.select import Select
 from POM.page_objects.base_object import BaseObject
 from selenium.webdriver.common.by import By
 
@@ -11,11 +10,13 @@ locators = {
     'SearchField': (By.CSS_SELECTOR, '#search'),
     'ConfirmSearchIcon': (By.XPATH, '//*[@class="action search"]'),
     'SearchResultTitle': (By.CSS_SELECTOR, '.base'),
-    #'ProductsListSearchResult': (By.XPATH, '//*[@class="products list items product-items"]/li')
     'ProductsListSearchResult': (By.CSS_SELECTOR, '.product-image-photo'),
     'NoResultText': (By.XPATH, '//*[@class="message notice"]'),
     'PartSearchResultsList': (By.XPATH, '//*[@class="block"]/dd/a'),
-
+    'SearchAutocompleteList': (By.XPATH, '//*[@id="search_autocomplete"]/ul/li'),
+    'SortButton': (By.XPATH, '(//*[@class="toolbar-sorter sorter"]/select)[1]'),
+    'ItemsPrice': (By.CSS_SELECTOR, '.price'),
+    'SortAscIcon': (By.XPATH, '(//*[@class="toolbar-sorter sorter"])[1]/a')
 }
 
 class SearchFunction(BaseObject):
@@ -71,4 +72,37 @@ class SearchFunction(BaseObject):
         items = self.driver.find_elements(*locators['ProductsListSearchResult'])
         return [item.get_attribute('alt') for item in items]
 
+    def autocomplete_list(self):
+        suggestions = self.wait.until(presence_of_all_elements_located(locators['SearchAutocompleteList']))
+        for suggestion in suggestions:
+            print(suggestion.text)
 
+    def click_first_suggestion(self):
+        suggestions = self.wait.until(presence_of_all_elements_located(locators['SearchAutocompleteList']))
+        if suggestions:
+            suggestions[0].click()
+        self.wait.until(visibility_of_element_located(locators['SearchResultTitle']))
+        return self.driver.find_element(*locators['SearchResultTitle']).text
+
+    def sort_function_price_high_low(self):
+        Select(self.driver.find_element(*locators['SortButton'])).select_by_visible_text('Price')
+        time.sleep(4)
+        prices = self.driver.find_elements(*locators['ItemsPrice'])
+        #Extract and convert prices to numbers
+        price_values = [float(price.text.replace("$", "").strip()) for price in prices]
+        #Check if sorted correctly
+        print("Extracted Prices:", price_values)
+        print("Expected Sorted Prices:", sorted(price_values, reverse=True))
+        assert price_values == sorted(price_values, reverse=True), "Sorting by price failed!"
+
+    def sort_function_price_low_high(self):
+        self.wait.until(visibility_of_element_located(locators['SortAscIcon']))
+        self.driver.find_element(*locators['SortAscIcon']).click()
+        time.sleep(3)
+        prices = self.driver.find_elements(*locators['ItemsPrice'])
+        #Extract and convert prices to numbers
+        price_values = [float(price.text.replace("$", "").strip()) for price in prices]
+        #Check if sorted correctly
+        print("Extracted Prices:", price_values)
+        print("Expected Sorted Prices:", sorted(price_values))
+        assert price_values == sorted(price_values), "Sorting by price failed!"

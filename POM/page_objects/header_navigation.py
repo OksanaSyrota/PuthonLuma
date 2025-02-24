@@ -79,8 +79,7 @@ locators = {
     'VideoDownloadLink': (By.CSS_SELECTOR, '#ui-id-28'),
     'VideoDownloadTitle': (By.CSS_SELECTOR, '.base'),
     'SaleLink': (By.CSS_SELECTOR, '#ui-id-8'),
-    'SaleTitle': (By.CSS_SELECTOR, '.base'),
-
+    'SaleTitle': (By.CSS_SELECTOR, '.base')
 }
 
 

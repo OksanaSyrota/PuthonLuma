@@ -49,10 +49,32 @@ class SearchFunctionTestSuits(unittest.TestCase):
         if result1 == result2:
             print("Both searches returned the same list of items.")
 
+    #Special Characters & Symbols
+    def test_special_characters(self):
+        result1 = self.search_function.get_search_results('#pants')
+        result2 = self.search_function.get_search_results('pants')
+        if result1 == result2:
+            print('Both searches returned the same list of items.')
 
+    #Search with Spaces
+    def test_search_with_spaces(self):
+        result1 = self.search_function.get_search_results('  skirt')
+        result2 = self.search_function.get_search_results('skirt')
+        if result1 == result2:
+            print('Both searches returned the same list of items.')
 
+    #Auto-Suggestions, Verify that suggestions appear while typing and selecting a suggestion leads to correct results.
+    def test_autocomplete(self):
+        self.search_function.enter_text_in_search_field('watc')
+        self.search_function.autocomplete_list()
+        self.assertEqual("Search results for: 'watc'", self.search_function.click_first_suggestion())
 
-
+    #check sort function on the search results page
+    def test_sort_function_for_search_results(self):
+        self.search_function.enter_text_in_search_field('Watch')
+        self.search_function.click_confirm_search_icon()
+        self.search_function.sort_function_price_high_low()
+        self.search_function.sort_function_price_low_high()
 
 
         @classmethod

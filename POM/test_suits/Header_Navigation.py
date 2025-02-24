@@ -89,11 +89,6 @@ class HeaderNavigationTestSuits(unittest.TestCase):
         self.assertEqual('Customer Login', self.header_navigation.sign_in_link())
 
 
-
-
-
-
-
         @classmethod
         def tearDownClass(cls) -> None:
             cls.driver.quit()
