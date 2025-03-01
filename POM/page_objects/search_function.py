@@ -24,6 +24,7 @@ class SearchFunction(BaseObject):
 
     #Search for an existing product/item and verify correct results are displayed.
     def enter_text_in_search_field(self, text_search):
+        self.driver.find_element(*locators['SearchField']).clear()
         self.driver.find_element(*locators['SearchField']).send_keys(text_search)
 
     def click_confirm_search_icon(self):
