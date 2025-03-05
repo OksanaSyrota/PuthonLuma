@@ -16,17 +16,28 @@ locators = {
     'QtyField': (By.CSS_SELECTOR, '#qty'),
     'AddToCartButton': (By.CSS_SELECTOR, '#product-addtocart-button'),
     'AddToWishlistLink': (By.XPATH, '(//*[@data-action="add-to-wishlist"])[1]'),
+    'CustomerLoginTitle': (By.CSS_SELECTOR, '.base'),
     'AddToCompareLink': (By.XPATH, '(//*[@class="action tocompare"])[1]'),
+    'AddedItemToCompareListText': (By.XPATH, '(//*[@class="messages"])[1]/div/div'),
+    'ComparisonListLink': (By.XPATH, '(//*[@class="messages"])[1]/div/div/a'),
+    'CompareProductsTitle': (By.CSS_SELECTOR, '.base'),
     'DetailsTab': (By.CSS_SELECTOR, '#tab-label-description-title'),
     'MoreInformationTab': (By.CSS_SELECTOR, '#tab-label-additional'),
     'ReviewsTab': (By.CSS_SELECTOR, '#tab-label-reviews-title'),
     #Reviews Tab
     'ReviewItemTitleText': (By.XPATH, '//*[@class="legend review-legend"]/strong'),
+    'YouAreReviewingText': (By.XPATH, '//*[@class="legend review-legend"]/span'),
     'ReviewStars': (By.CSS_SELECTOR, '.radio'),
+    'Rating5': (By.CSS_SELECTOR, '#Rating_5'),
     'NicknameField': (By.CSS_SELECTOR, '#nickname_field'),
     'SummaryField': (By.CSS_SELECTOR, '#summary_field'),
     'ReviewField': (By.CSS_SELECTOR, '#review_field'),
     'SubmitReviewButton': (By.XPATH, '//*[@class="primary actions-primary"]'),
+    'RatingErrorText': (By.CSS_SELECTOR, 'div[id="ratings[4]-error"]'),
+    'NicknameErrorText': (By.CSS_SELECTOR, '#nickname_field-error'),
+    'SummaryErrorText': (By.CSS_SELECTOR, '#summary_field-error'),
+    'ReviewErrorText': (By.CSS_SELECTOR, '#review_field-error'),
+    'YouSubmittedReviewText': (By.XPATH, '(//*[@class="messages"])[1]/div/div'),
     'ItemImage': (By.XPATH, '(//*[@class="fotorama__img"])[1]'),
     'SuccessMessageAddToCart': (By.XPATH, '//*[@class="message-success success message"]'),
     'ErrorMessageForSize': (By.XPATH, '//*[contains(@id, "super_attribute[143]-error")]'),
@@ -62,6 +73,7 @@ class ProductDetailPage(BaseObject):
             print("Error:", e)
 
     def image_is_present(self):
+        self.wait.until(visibility_of_element_located(locators['ItemImage']))
         item_image = self.driver.find_element(*locators['ItemImage'])
         assert item_image.get_attribute('src'), 'Item image is missing'
         print('Item image is displayed')
@@ -94,6 +106,86 @@ class ProductDetailPage(BaseObject):
     def get_error_message_for_color(self):
         self.wait.until(visibility_of_element_located(locators['ErrorMessageForColor']))
         return self.driver.find_element(*locators['ErrorMessageForColor']).text
+
+    def click_add_to_wishlist(self):
+        self.wait.until(element_to_be_clickable(locators['AddToWishlistLink']))
+        self.driver.find_element(*locators['AddToWishlistLink']).click()
+
+    def customer_login_text(self):
+        self.wait.until(visibility_of_element_located(locators['CustomerLoginTitle']))
+        return self.driver.find_element(*locators['CustomerLoginTitle']).text
+
+    def click_add_to_compare_link(self):
+        self.wait.until(element_to_be_clickable(locators['AddToCompareLink']))
+        self.driver.find_element(*locators['AddToCompareLink']).click()
+
+    def get_added_to_comparison_list_text(self):
+        self.wait.until(visibility_of_element_located(locators['AddedItemToCompareListText']))
+        return self.driver.find_element(*locators['AddedItemToCompareListText']).text
+
+    def click_comparison_list_link(self):
+        self.wait.until(element_to_be_clickable(locators['ComparisonListLink']))
+        self.driver.find_element(*locators['ComparisonListLink']).click()
+        self.wait.until(visibility_of_element_located(locators['CompareProductsTitle']))
+        return self.driver.find_element(*locators['CompareProductsTitle']).text
+
+    #Reviews tab
+    def click_reviews_tab(self):
+        self.wait.until(element_to_be_clickable(locators['ReviewsTab']))
+        self.driver.find_element(*locators['ReviewsTab']).click()
+
+    def get_you_are_reviewing_text(self):
+        self.wait.until(visibility_of_element_located(locators['YouAreReviewingText']))
+        return self.driver.find_element(*locators['YouAreReviewingText']).text
+
+    def get_item_title_from_review(self):
+        self.wait.until(visibility_of_element_located(locators['ReviewItemTitleText']))
+        return self.driver.find_element(*locators['ReviewItemTitleText']).text
+
+    def click_five_stars_icon(self):
+        self.wait.until(element_to_be_clickable(locators['Rating5']))
+        element = self.driver.find_element(*locators['Rating5'])
+        self.driver.execute_script("arguments[0].click();", element)
+
+    def enter_nickname(self):
+        self.wait.until(element_to_be_clickable(locators['NicknameField']))
+        self.driver.find_element(*locators['NicknameField']).send_keys('Test')
+
+    def enter_summary(self):
+        self.wait.until(element_to_be_clickable(locators['SummaryField']))
+        self.driver.find_element(*locators['SummaryField']).send_keys('Test')
+
+    def enter_review(self):
+        self.wait.until(element_to_be_clickable(locators['ReviewField']))
+        self.driver.find_element(*locators['ReviewField']).send_keys('Test test test')
+
+    def click_submit_review_button(self):
+        self.wait.until(element_to_be_clickable(locators['SubmitReviewButton']))
+        self.driver.find_element(*locators['SubmitReviewButton']).click()
+
+    def get_you_submitted_review_text(self):
+        self.wait.until(visibility_of_element_located(locators['YouSubmittedReviewText']))
+        return self.driver.find_element(*locators['YouSubmittedReviewText']).text
+
+    def get_rating_error(self):
+        self.wait.until(visibility_of_element_located(locators['RatingErrorText']))
+        return self.driver.find_element(*locators['RatingErrorText']).text
+
+    def get_nickname_error(self):
+        self.wait.until(visibility_of_element_located(locators['NicknameErrorText']))
+        return self.driver.find_element(*locators['NicknameErrorText']).text
+
+    def get_summary_error(self):
+        self.wait.until(visibility_of_element_located(locators['SummaryErrorText']))
+        return self.driver.find_element(*locators['SummaryErrorText']).text
+
+    def get_review_error(self):
+        self.wait.until(visibility_of_element_located(locators['ReviewErrorText']))
+        return self.driver.find_element(*locators['ReviewErrorText']).text
+
+    def click_be_the_first_to_review(self):
+        self.wait.until(element_to_be_clickable(locators['BeTheFirstToReviewTheProductLink']))
+        self.driver.find_element(*locators['BeTheFirstToReviewTheProductLink']).click()
 
 
 

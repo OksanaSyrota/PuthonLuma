@@ -32,6 +32,18 @@ class ProductDetailPageTestSuits(unittest.TestCase):
         self.product_detail_page.get_price_item()
         self.product_detail_page.in_stock_option()
         self.product_detail_page.image_is_present()
+        self.product_detail_page.click_add_to_wishlist()
+        self.assertEqual('Customer Login', self.product_detail_page.customer_login_text())
+        self.driver.back()
+        self.product_detail_page.click_add_to_compare_link()
+        self.assertEqual(f'You added product {self.item_title} to the comparison list.',
+                         self.product_detail_page.get_added_to_comparison_list_text())
+        self.assertEqual('Compare Products', self.product_detail_page.click_comparison_list_link())
+        self.driver.back()
+        self.product_detail_page.click_be_the_first_to_review()
+        self.assertEqual("You're reviewing:", self.product_detail_page.get_you_are_reviewing_text())
+        self.assertEqual(self.item_title, self.product_detail_page.get_item_title_from_review())
+        self.driver.back()
 
     def test_add_to_cart_without_size(self):
         self.product_detail_page.click_color_option()
@@ -53,6 +65,30 @@ class ProductDetailPageTestSuits(unittest.TestCase):
         self.assertEqual(f'You added {self.item_title} to your shopping cart.',
                          self.product_detail_page.get_success_message_add_to_cart())
         self.driver.refresh()
+
+    def test_reviews_tab(self):
+        self.product_detail_page.click_reviews_tab()
+        self.assertEqual("You're reviewing:", self.product_detail_page.get_you_are_reviewing_text())
+        self.assertEqual(self.item_title, self.product_detail_page.get_item_title_from_review())
+        self.product_detail_page.click_five_stars_icon()
+        self.product_detail_page.enter_nickname()
+        self.product_detail_page.enter_summary()
+        self.product_detail_page.enter_review()
+        self.product_detail_page.click_submit_review_button()
+        self.assertEqual('You submitted your review for moderation.',
+                         self.product_detail_page.get_you_submitted_review_text())
+        self.driver.refresh()
+
+    def test_review_errors(self):
+        self.product_detail_page.click_reviews_tab()
+        self.product_detail_page.click_submit_review_button()
+        self.assertEqual('Please select one of each of the ratings above.',
+                         self.product_detail_page.get_rating_error())
+        self.assertEqual('This is a required field.', self.product_detail_page.get_nickname_error())
+        self.assertEqual('This is a required field.', self.product_detail_page.get_summary_error())
+        self.assertEqual('This is a required field.', self.product_detail_page.get_review_error())
+        self.driver.refresh()
+
 
 
 
