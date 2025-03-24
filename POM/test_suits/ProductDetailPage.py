@@ -90,8 +90,6 @@ class ProductDetailPageTestSuits(unittest.TestCase):
         self.driver.refresh()
 
 
-
-
         @classmethod
         def tearDownClass(cls) -> None:
             cls.driver.quit()

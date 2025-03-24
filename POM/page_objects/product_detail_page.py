@@ -1,7 +1,5 @@
-import time
-from selenium.webdriver.support.expected_conditions import element_to_be_clickable, visibility_of_element_located, \
-    presence_of_all_elements_located, presence_of_element_located
-from selenium.webdriver.support.select import Select
+from selenium.webdriver.support.expected_conditions import (element_to_be_clickable, visibility_of_element_located,
+                                                            presence_of_element_located)
 from POM.page_objects.base_object import BaseObject
 from selenium.webdriver.common.by import By
 
@@ -41,9 +39,7 @@ locators = {
     'ItemImage': (By.XPATH, '(//*[@class="fotorama__img"])[1]'),
     'SuccessMessageAddToCart': (By.XPATH, '//*[@class="message-success success message"]'),
     'ErrorMessageForSize': (By.XPATH, '//*[contains(@id, "super_attribute[143]-error")]'),
-    'ErrorMessageForColor': (By.XPATH, '//*[contains(@id, "super_attribute[93]-error")]'),
-
-
+    'ErrorMessageForColor': (By.XPATH, '//*[contains(@id, "super_attribute[93]-error")]')
 }
 
 class ProductDetailPage(BaseObject):
